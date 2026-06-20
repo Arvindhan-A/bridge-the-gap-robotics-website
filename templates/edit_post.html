@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Edit Post - Admin{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Edit Post</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" value="{{ post.title }}" required>
+        </div>
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" id="author" name="author" value="{{ post.author }}">
+        </div>
+        <div class="form-group">
+            <label for="content">Content (HTML supported)</label>
+            <textarea id="content" name="content" required>{{ post.content }}</textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-accent">Save Changes</button>
+            <a href="/blog" class="btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

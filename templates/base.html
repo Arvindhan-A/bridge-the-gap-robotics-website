@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bridge the Gap Robotics Foundation{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-inner">
+            <a href="/" class="nav-brand">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BTG" class="nav-logo">
+                <span class="nav-brand-text">
+                    Bridge the Gap
+                    <span class="nav-brand-sub">Robotics Foundation</span>
+                </span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class="nav-link{% if request.path == '/' %} active{% endif %}">Home</a>
+                <a href="/kits" class="nav-link{% if request.path == '/kits' %} active{% endif %}">Our Kits</a>
+                <a href="/partners" class="nav-link{% if request.path == '/partners' %} active{% endif %}">Partners</a>
+                <a href="/events" class="nav-link{% if request.path == '/events' %} active{% endif %}">Events</a>
+                <a href="/blog" class="nav-link{% if request.path.startswith('/blog') %} active{% endif %}">Blog</a>
+            </div>
+
+            <div class="nav-controls">
+                <a href="https://hcb.hackclub.com/donations/start/bridge-the-gap-robotics-foundation" class="btn btn-accent btn-sm" target="_blank">Donate</a>
+                <button class="nav-toggle" aria-label="Toggle navigation">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="foot">
+        <p>&copy; 2026 Bridge the Gap Robotics Foundation. All rights reserved.</p>
+        <p class="foot-sub">
+            <a href="mailto:bridgethegap.robotics@gmail.com" style="color:var(--accent);text-decoration:none;">bridgethegap.robotics@gmail.com</a>
+            &nbsp;&middot;&nbsp;
+            <a href="https://instagram.com/" target="_blank" style="color:var(--accent);text-decoration:none;">@bridgethegap.robotics</a>
+        </p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+        </button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+        <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,6 15,12 9,18"/></svg>
+        </button>
+        <span class="lightbox-counter" id="lightboxCounter"></span>
+    </div>
+</body>
+</html>

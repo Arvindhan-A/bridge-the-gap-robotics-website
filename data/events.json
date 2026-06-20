@@ -1,0 +1,72 @@
+[
+  {
+    "id": "evt-006",
+    "title": "Tomorrow's Leaders Today Donation",
+    "description": "Equipped the Tomorrow's Leaders Today program with kits to inspire the next generation of innovators.",
+    "date": "2026-05-01",
+    "location": "Community Center",
+    "status": "past",
+    "images": ["events/tlt-1.jpg", "events/tlt-2.jpg", "events/tlt-3.jpg"],
+    "created_at": "2026-05-01T00:00:00"
+  },
+  {
+    "id": "evt-005",
+    "title": "Scottish Rite Donation",
+    "description": "Provided robotics kits to Scottish Rite Hospital to support educational and therapeutic play.",
+    "date": "2026-04-01",
+    "location": "Scottish Rite Hospital",
+    "status": "past",
+    "images": ["events/sr-1.jpg", "events/sr-2.jpg", "events/sr-3.jpg"],
+    "created_at": "2026-04-01T00:00:00"
+  },
+  {
+    "id": "evt-004",
+    "title": "Children's Health Donation",
+    "description": "Donated robotics kits to Children's Health to bring engaging STEM activities to young patients.",
+    "date": "2026-02-01",
+    "location": "Children's Health",
+    "status": "past",
+    "images": ["events/ch-1.jpg", "events/ch-2.jpg", "events/ch-3.jpg", "events/ch-4.jpg"],
+    "created_at": "2026-02-01T00:00:00"
+  },
+  {
+    "id": "evt-003",
+    "title": "Kadak New Years Event",
+    "description": "Celebrated the new year by sharing robotics activities and kits with families at the Kadak community event.",
+    "date": "2026-01-01",
+    "location": "Kadak Community Center",
+    "status": "past",
+    "images": ["events/kn-1.jpg", "events/kn-2.jpg", "events/kn-3.jpg", "events/kn-4.jpg", "events/kn-5.jpg", "events/kn-6.jpg"],
+    "created_at": "2026-01-01T00:00:00"
+  },
+  {
+    "id": "evt-002",
+    "title": "STEM Kit Drive",
+    "description": "A community-wide drive collecting and distributing STEM kits to students in underserved areas.",
+    "date": "2025-12-01",
+    "location": "Community",
+    "status": "past",
+    "images": ["events/sk-1.jpg", "events/sk-2.jpg", "events/sk-3.jpg"],
+    "created_at": "2025-12-01T00:00:00"
+  },
+  {
+    "id": "evt-001",
+    "title": "Robotics Petting Zoo",
+    "description": "Hands-on robotics showcase where attendees explored and interacted with a variety of robots and STEM kits.",
+    "date": "2025-03-01",
+    "location": "Community Event",
+    "status": "past",
+    "images": ["events/rpz-1.jpg", "events/rpz-2.jpg", "events/rpz-3.jpg"],
+    "created_at": "2025-03-01T00:00:00"
+  },
+  {
+    "id": "evt-000",
+    "title": "Rubber Band Helicopter Workshop",
+    "description": "Hands-on workshop to build rubber-band powered helicopters inspired by STEM Invention.",
+    "date": "2026-07-15",
+    "location": "Community Center, Albany NY",
+    "status": "upcoming",
+    "images": [],
+    "created_at": "2026-06-20T00:00:00"
+  }
+]

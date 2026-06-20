@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login - Admin{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Admin Login</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-accent">Log In</button>
+            <a href="/" class="btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

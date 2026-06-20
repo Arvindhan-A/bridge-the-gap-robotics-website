@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Admin - Bridge the Gap{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>Admin Panel</h1>
+        <div class="admin-header-actions">
+            <a href="/admin/post/new" class="btn btn-sm">New Post</a>
+            <a href="/admin/event/new" class="btn-outline btn-sm">New Event</a>
+            <a href="/logout" class="btn-outline btn-sm">Logout</a>
+        </div>
+    </div>
+
+    <div class="admin-grid">
+        <div class="admin-section">
+            <h2>Blog Posts ({{ posts|length }})</h2>
+            {% if posts %}
+                {% for post in posts %}
+                <div class="admin-item">
+                    <div class="admin-item-info">
+                        <div class="admin-item-title">{{ post.title }}</div>
+                        <div class="admin-item-date">{{ post.created_at[:10] }} &middot; {{ post.author }}</div>
+                    </div>
+                    <div class="admin-actions">
+                        <a href="/admin/post/{{ post.id }}/edit">Edit</a>
+                        <form action="/admin/post/{{ post.id }}/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete this post?')">
+                            <button type="submit" class="btn-delete">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="admin-empty">No posts yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="admin-section">
+            <h2>Events ({{ events|length }})</h2>
+            {% if events %}
+                {% for event in events %}
+                <div class="admin-item">
+                    <div class="admin-item-info">
+                        <div class="admin-item-title">{{ event.title }}</div>
+                        <div class="admin-item-date">{{ event.date }} &middot; {{ event.status }}</div>
+                    </div>
+                    <div class="admin-actions">
+                        <a href="/admin/event/{{ event.id }}/edit">Edit</a>
+                        <form action="/admin/event/{{ event.id }}/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete this event?')">
+                            <button type="submit" class="btn-delete">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="admin-empty">No events yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

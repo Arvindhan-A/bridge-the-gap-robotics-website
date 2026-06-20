@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}New Post - Admin{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>New Blog Post</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" id="author" name="author" value="Admin">
+        </div>
+        <div class="form-group">
+            <label for="content">Content (HTML supported)</label>
+            <textarea id="content" name="content" required></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-accent">Publish</button>
+            <a href="/blog" class="btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

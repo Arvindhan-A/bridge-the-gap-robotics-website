@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Blog - Bridge the Gap{% endblock %}
+{% block content %}
+<section class="hero hero-compact">
+    <p class="hero-tagline">Engineering Blog</p>
+    <h1>Blog</h1>
+    <p class="hero-sub">Insights, stories, and updates from the Bridge the Gap Robotics Foundation.</p>
+</section>
+
+<section class="section">
+    <div class="blog-controls">
+        <div class="blog-search">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search posts...">
+        </div>
+        {% if session.get('logged_in') %}
+        <a href="/admin/post/new" class="btn btn-sm">New Post</a>
+        {% endif %}
+    </div>
+
+    {% if posts %}
+    <div class="post-grid">
+        {% for post in posts %}
+        <a href="/blog/{{ post.id }}" class="post-card">
+            <span class="post-date">{{ post.created_at[:10] }}</span>
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
+            <span class="post-author">by {{ post.author }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="post-empty">
+        <h3>No posts yet</h3>
+        <p>Be the first to share your engineering knowledge!</p>
+        <a href="/admin/post/new" class="btn btn-accent" style="margin-top:1.25rem;">Create First Post</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
