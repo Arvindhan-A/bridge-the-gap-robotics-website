@@ -1,0 +1,33 @@
+[
+  {
+    "id": "usr-001",
+    "email": "admin@bridgethegaprobotics.org",
+    "password": "btg-admin-2026",
+    "name": "BTG Admin",
+    "role": "super_admin"
+  },
+  {
+    "id": "usr-002",
+    "email": "priya@btgchapters.org",
+    "password": "chennai-2026",
+    "name": "Priya Sharma",
+    "role": "chapter_president",
+    "chapter_id": "ch-001"
+  },
+  {
+    "id": "usr-003",
+    "email": "alex@btgchapters.org",
+    "password": "mass-2026",
+    "name": "Alex Chen",
+    "role": "chapter_president",
+    "chapter_id": "ch-002"
+  },
+  {
+    "id": "usr-004",
+    "email": "aahana@bridgethegaprobotics.org",
+    "password": "frisco-2026",
+    "name": "Aahana Basappa",
+    "role": "chapter_president",
+    "chapter_id": "ch-003"
+  }
+]

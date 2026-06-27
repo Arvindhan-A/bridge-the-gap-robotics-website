@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile nav
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
+    const navClose = document.querySelector('.nav-close');
     if (navToggle && navLinks) {
         function openMenu() {
             navLinks.classList.add('open');
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         navToggle.addEventListener('click', toggleMenu);
+        if (navClose) navClose.addEventListener('click', closeMenu);
 
         // Close on link click
         navLinks.querySelectorAll('.nav-link').forEach(link => {

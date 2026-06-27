@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Manage Chapters | BTG{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>All Chapters</h1>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('admin.chapter_create') }}" class="btn btn-sm">New Chapter</a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-outline btn-sm">Back</a>
+        </div>
+    </div>
+
+    <div class="admin-section">
+        <h2>All Chapters</h2>
+        {% for chapter in chapters %}
+        <div class="admin-item">
+            <div class="admin-item-info">
+                <div class="admin-item-title">{{ chapter.name }}</div>
+                <div class="admin-item-date">
+                    {{ chapter.city }} &middot;
+                    {{ chapter.status }} &middot;
+                    {{ 'Published' if chapter.published else 'Unpublished' }}
+                </div>
+            </div>
+            <div class="admin-actions">
+                <form method="POST" action="{{ url_for('admin.chapter_toggle', chapter_id=chapter.id) }}" style="display:inline;">
+                    <button type="submit">{{ 'Unpublish' if chapter.published else 'Publish' }}</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                </form>
+                <a href="{{ url_for('admin.chapter_edit', chapter_id=chapter.id) }}">Edit</a>
+                <form method="POST" action="{{ url_for('admin.chapter_delete', chapter_id=chapter.id) }}" style="display:inline;" onsubmit="return confirm('Delete this chapter and all its data?')">
+                    <button type="submit" class="btn-delete">Delete</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="admin-empty">No chapters created yet.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} | Events{% endblock %}
+{% block content %}
+<a href="{{ url_for('public.events') }}" class="back" style="padding-top:3rem;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+    Back to Events
+</a>
+
+<div class="event-hero" {% if event.banner %}style="background-image:url('{{ url_for('static', filename=event.banner) }}');"{% else %}style="background:linear-gradient(135deg, hsl(var(--hue), 55%, 55%), hsl(var(--hue), 45%, 45%));"{% endif %}>
+    <div class="event-hero-overlay">
+        <div class="container">
+            {% if event.chapter %}
+            <div class="event-hero-chapter">{{ event.chapter.name }}</div>
+            {% endif %}
+            <h1 class="event-hero-title">{{ event.title }}</h1>
+            <div class="event-hero-meta">
+                <span>{{ event.date.strftime('%B %d, %Y') }}</span>
+                {% if event.time %}<span>{{ event.time }}</span>{% endif %}
+                {% if event.venue %}<span>{{ event.venue }}</span>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="event-detail-layout">
+    <div class="event-detail-main">
+        <div class="event-section">
+            <h2>Event Details</h2>
+            <div class="event-description">
+                {% if event.description %}
+                <p>{{ event.description }}</p>
+                {% endif %}
+                {% if event.content %}
+                {{ event.content|safe }}
+                {% endif %}
+                {% if not event.description and not event.content %}
+                <p>No details available for this event.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if images %}
+        <div class="event-section">
+            <h2>Gallery ({{ images|length }})</h2>
+            <div class="gallery-grid">
+                {% for img in images %}
+                <div class="chapter-slide" data-src="{{ url_for('static', filename=img.image) }}">
+                    <img src="{{ url_for('static', filename=img.image) }}" alt="{{ img.caption or event.title }}" loading="lazy">
+                    {% if img.caption %}<span class="gallery-caption">{{ img.caption }}</span>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="event-detail-sidebar">
+        <div class="sidebar-card">
+            <h3>Event Info</h3>
+            <div class="sidebar-info-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>{{ event.status|title }}</span>
+            </div>
+            <div class="sidebar-info-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l2 2"/></svg>
+                <span>{{ event.date.strftime('%b %d, %Y') }} {% if event.time %}at {{ event.time }}{% endif %}</span>
+            </div>
+            {% if event.venue %}
+            <div class="sidebar-info-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>{{ event.venue }}</span>
+            </div>
+            {% endif %}
+            {% if event.chapter %}
+            <div class="sidebar-info-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>{{ event.chapter.city }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if event.registration_link %}
+        <div class="sidebar-card sidebar-card-cta">
+            <h3>Register</h3>
+            <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:1rem;">Secure your spot at this event.</p>
+            <a href="{{ event.registration_link }}" target="_blank" class="btn btn-accent" style="width:100%;text-align:center;">Register Now</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.querySelectorAll('.gallery-grid .chapter-slide').forEach(slide => {
+    slide.addEventListener('click', function() {
+        const src = this.dataset.src;
+        const index = Array.from(this.parentElement.children).indexOf(this);
+        openLightbox(src, index);
+    });
+});
+function openLightbox(src, startIndex) {
+    const slides = document.querySelectorAll('.gallery-grid .chapter-slide');
+    let index = startIndex;
+    const overlay = document.createElement('div');
+    overlay.id = 'eventLightbox';
+    overlay.style = 'display:flex;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:2rem;';
+    function updateImg() {
+        overlay.innerHTML = '<button onclick="document.getElementById(\'eventLightbox\').remove()" style="position:absolute;top:1.5rem;right:1.5rem;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><img src="' + slides[index].dataset.src + '" style="max-width:90vw;max-height:85vh;border-radius:var(--r-md);object-fit:contain;">';
+    }
+    updateImg();
+    document.body.appendChild(overlay);
+}
+</script>
+{% endblock %}

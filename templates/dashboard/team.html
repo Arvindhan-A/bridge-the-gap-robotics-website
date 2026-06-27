@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Team | {{ chapter.name }}{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>Team Members</h1>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('dashboard.overview') }}" class="btn-outline btn-sm">Back</a>
+        </div>
+    </div>
+
+    <div class="admin-section">
+        <h2>Add Team Member</h2>
+        <form method="POST" action="{{ url_for('dashboard.team_add') }}" enctype="multipart/form-data" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);">
+            <input type="hidden" name="chapter_id" value="{{ chapter.id }}">
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="name" placeholder="Full name" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="position" placeholder="Position (e.g. Chapter President)" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="email" placeholder="Email">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="url" name="linkedin" placeholder="LinkedIn URL">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <textarea name="bio" rows="2" placeholder="Short bio"></textarea>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="file" name="photo" accept="image/*">
+            </div>
+            <div style="grid-column:1/-1;">
+                <button type="submit" class="btn btn-sm">Add Member</button>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        </form>
+    </div>
+
+    <div class="admin-section" style="margin-top:2.5rem;">
+        <h2>Current Team ({{ members|length }})</h2>
+        {% for member in members %}
+        <div class="admin-item">
+            <div class="admin-item-info">
+                <div class="admin-item-title">{{ member.name }}</div>
+                <div class="admin-item-date">{{ member.position }}{% if member.email %} &middot; {{ member.email }}{% endif %}</div>
+            </div>
+            <div class="admin-actions">
+                <form method="POST" action="{{ url_for('dashboard.team_delete', member_id=member.id) }}" style="display:inline;" onsubmit="return confirm('Remove this member?')">
+                    <button type="submit" class="btn-delete">Remove</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="admin-empty">No team members yet. Add your first member above.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

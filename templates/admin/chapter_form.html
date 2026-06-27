@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if chapter else 'New' }} Chapter | BTG{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>{{ 'Edit' if chapter else 'New' }} Chapter</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Chapter Name *</label>
+            <input type="text" name="name" value="{{ chapter.name if chapter else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>City *</label>
+            <input type="text" name="city" value="{{ chapter.city if chapter else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>Short Description</label>
+            <textarea name="description" rows="3">{{ chapter.description if chapter else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>About (full description)</label>
+            <textarea name="about" rows="6">{{ chapter.about if chapter else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Mission</label>
+            <textarea name="mission" rows="3">{{ chapter.mission if chapter else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Vision</label>
+            <textarea name="vision" rows="3">{{ chapter.vision if chapter else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Cover Image</label>
+            <input type="file" name="cover_image" accept="image/*">
+            {% if chapter and chapter.cover_image %}<p style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">Current: {{ chapter.cover_image }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+            <label>Chapter Logo</label>
+            <input type="file" name="logo" accept="image/*">
+            {% if chapter and chapter.logo %}<p style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">Current: {{ chapter.logo }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <select name="status">
+                <option value="active" {% if chapter and chapter.status == 'active' %}selected{% endif %}>Active</option>
+                <option value="onboarding" {% if chapter and chapter.status == 'onboarding' %}selected{% endif %}>Onboarding</option>
+                <option value="inactive" {% if chapter and chapter.status == 'inactive' %}selected{% endif %}>Inactive</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="published" {% if not chapter or chapter.published %}checked{% endif %}>
+                Published (visible on public site)
+            </label>
+        </div>
+
+        <h2 style="font-family:'Google Sans',sans-serif;font-size:1.25rem;font-weight:400;margin:2rem 0 1rem;">Contact &amp; Social</h2>
+        <div class="form-group">
+            <label>Contact Email</label>
+            <input type="email" name="contact_email" value="{{ chapter.contact_email if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="text" name="contact_phone" value="{{ chapter.contact_phone if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <input type="text" name="address" value="{{ chapter.address if chapter else '' }}">
+        </div>
+        <div class="form-group" style="grid-column:span 2;">
+            <label>Google Maps Embed URL</label>
+            <input type="url" name="google_maps" value="{{ chapter.google_maps if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Latitude (for map pin)</label>
+            <input type="number" step="any" name="latitude" value="{{ chapter.latitude if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Longitude (for map pin)</label>
+            <input type="number" step="any" name="longitude" value="{{ chapter.longitude if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Instagram URL</label>
+            <input type="url" name="instagram" value="{{ chapter.instagram if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>LinkedIn URL</label>
+            <input type="url" name="linkedin" value="{{ chapter.linkedin if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Discord URL</label>
+            <input type="url" name="discord" value="{{ chapter.discord if chapter else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Website URL</label>
+            <input type="url" name="website" value="{{ chapter.website if chapter else '' }}">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn">{{ 'Save Changes' if chapter else 'Create Chapter' }}</button>
+            <a href="{{ url_for('admin.chapters') }}" class="btn-outline">Cancel</a>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    </form>
+</div>
+{% endblock %}

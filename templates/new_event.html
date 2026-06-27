@@ -1,36 +1,54 @@
 {% extends "base.html" %}
-{% block title %}New Event - Admin{% endblock %}
+{% block title %}New Event | Admin{% endblock %}
 {% block content %}
-<div class="form-page">
-    <h1>New Event</h1>
-    <form method="POST">
-        <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title" required>
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>New Event</h1>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('admin.legacy') }}" class="btn-outline btn-sm">Back</a>
         </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="date">Date</label>
-            <input type="date" id="date" name="date" required>
-        </div>
-        <div class="form-group">
-            <label for="location">Location</label>
-            <input type="text" id="location" name="location">
-        </div>
-        <div class="form-group">
-            <label for="status">Status</label>
-            <select id="status" name="status">
-                <option value="upcoming">Upcoming</option>
-                <option value="past">Past</option>
-            </select>
-        </div>
-        <div class="form-actions">
-            <button type="submit" class="btn btn-accent">Create Event</button>
-            <a href="/events" class="btn-outline">Cancel</a>
-        </div>
-    </form>
+    </div>
+
+    <div class="admin-section">
+        <form method="POST" enctype="multipart/form-data" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);">
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="title" placeholder="Event title" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="date" name="date" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="venue" placeholder="Venue / Location">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <select name="status">
+                    <option value="published">Published</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="time" placeholder="Time (e.g. 10:00 AM)">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="url" name="registration_link" placeholder="Registration link (optional)">
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <textarea name="description" rows="3" placeholder="Event description"></textarea>
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <textarea name="content" rows="6" placeholder="Event content (HTML)"></textarea>
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <label style="font-size:0.875rem;font-weight:600;display:block;margin-bottom:0.3rem;">Banner Image</label>
+                <input type="file" name="banner" accept="image/*">
+            </div>
+            <div style="grid-column:1/-1;">
+                <button type="submit" class="btn btn-sm">Create Event</button>
+                <a href="{{ url_for('admin.legacy') }}" class="btn-outline btn-sm" style="margin-left:0.5rem;">Cancel</a>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        </form>
+    </div>
 </div>
 {% endblock %}

@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Bridge the Gap Robotics Foundation{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    {% block head %}{% endblock %}
 </head>
 <body>
     <header class="site-header">
         <nav class="nav-inner">
             <a href="/" class="nav-brand">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BTG" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="BTG" class="nav-logo nav-logo-light">
+                <img src="{{ url_for('static', filename='images/logo-dark.png') }}" alt="BTG" class="nav-logo nav-logo-dark">
                 <span class="nav-brand-text">
                     Bridge the Gap
                     <span class="nav-brand-sub">Robotics Foundation</span>
@@ -21,13 +26,23 @@
             <div class="nav-links">
                 <a href="/" class="nav-link{% if request.path == '/' %} active{% endif %}">Home</a>
                 <a href="/kits" class="nav-link{% if request.path == '/kits' %} active{% endif %}">Our Kits</a>
+                <a href="/chapters" class="nav-link{% if request.path.startswith('/chapters') %} active{% endif %}">Chapters</a>
                 <a href="/partners" class="nav-link{% if request.path == '/partners' %} active{% endif %}">Partners</a>
-                <a href="/events" class="nav-link{% if request.path == '/events' %} active{% endif %}">Events</a>
-                <a href="/blog" class="nav-link{% if request.path.startswith('/blog') %} active{% endif %}">Blog</a>
+                <a href="/events" class="nav-link{% if request.path.startswith('/events') %} active{% endif %}">Events</a>
+                {% if current_user %}
+                <a href="/dashboard" class="nav-link" style="color:var(--accent);font-weight:600;">Dashboard</a>
+                {% endif %}
             </div>
 
             <div class="nav-controls">
                 <a href="https://hcb.hackclub.com/donations/start/bridge-the-gap-robotics-foundation" class="btn btn-accent btn-sm" target="_blank">Donate</a>
+                {% if current_user %}
+                <a href="/logout" class="btn-outline btn-sm">Logout</a>
+                {% endif %}
+                <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" style="background:none;border:none;cursor:pointer;color:var(--text-2);padding:6px;border-radius:var(--r-sm);display:flex;align-items:center;transition:color .2s;" title="Toggle dark mode">
+                    <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
                 <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
                     <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                     <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -36,15 +51,20 @@
         </nav>
     </header>
 
-    <main class="main">
+    <div id="flash-container" style="position:fixed;top:0;left:0;right:0;z-index:999;pointer-events:none;padding:88px var(--pad) 0;display:flex;flex-direction:column;align-items:center;">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                    <div class="flash flash-{{ category }}" style="pointer-events:auto;max-width:var(--w);width:100%;">
+                        {{ message }}
+                        <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
+    </div>
 
+    <main class="main">
         {% block content %}{% endblock %}
     </main>
 
@@ -57,10 +77,31 @@
         </p>
     </footer>
 
+    <script>
+    (function() {
+      var key = 'btg-dark-mode';
+      var root = document.documentElement;
+      var btn = document.getElementById('darkToggle');
+      var sun = btn && btn.querySelector('.sun-icon');
+      var moon = btn && btn.querySelector('.moon-icon');
+      function setDark(enabled) {
+        root.classList.toggle('dark-mode', enabled);
+        if (sun) sun.style.display = enabled ? 'none' : '';
+        if (moon) moon.style.display = enabled ? '' : 'none';
+      }
+      try {
+        if (localStorage.getItem(key) === 'true') setDark(true);
+      } catch(e) {}
+      if (btn) btn.addEventListener('click', function() {
+        var on = root.classList.contains('dark-mode');
+        setDark(!on);
+        try { localStorage.setItem(key, !on); } catch(e) {}
+      });
+    })();
+    </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}
 
-    <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
         <button class="lightbox-close" id="lightboxClose" aria-label="Close">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

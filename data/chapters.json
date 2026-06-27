@@ -1,0 +1,85 @@
+[
+  {
+    "id": "ch-001",
+    "name": "Chennai Chapter",
+    "slug": "chennai",
+    "location": "Chennai, Tamil Nadu",
+    "country": "India",
+    "status": "active",
+    "president_name": "Priya Sharma",
+    "president_email": "priya@btgchapters.org",
+    "president_phone": "+91-9876543210",
+    "member_count": 25,
+    "monthly_fundraising_goal": 200,
+    "monthly_kits_goal": 75,
+    "monthly_events_goal": 1,
+    "description": "Our Chennai chapter brings robotics education to students across Tamil Nadu through workshops, kit donations, and school partnerships.",
+    "founded_date": "2025-09-15",
+    "social_links": {
+      "instagram": "https://instagram.com/btgchennai"
+    },
+    "stats": {
+      "kits_donated": 120,
+      "funds_raised": 1800,
+      "events_held": 8,
+      "students_served": 450
+    },
+    "created_at": "2025-09-15T00:00:00Z",
+    "updated_at": "2026-06-01T00:00:00Z"
+  },
+  {
+    "id": "ch-002",
+    "name": "Massachusetts Pilot Chapter",
+    "slug": "massachusetts",
+    "location": "Boston, Massachusetts",
+    "country": "US",
+    "status": "onboarding",
+    "president_name": "Alex Chen",
+    "president_email": "alex@btgchapters.org",
+    "president_phone": "+1-617-555-0123",
+    "member_count": 12,
+    "monthly_fundraising_goal": 200,
+    "monthly_kits_goal": 75,
+    "monthly_events_goal": 1,
+    "description": "Pilot chapter bringing BTG's mission to the Northeast US. Building partnerships with Boston-area schools and community centers.",
+    "founded_date": "2026-03-01",
+    "social_links": {},
+    "stats": {
+      "kits_donated": 15,
+      "funds_raised": 350,
+      "events_held": 2,
+      "students_served": 60
+    },
+    "created_at": "2026-03-01T00:00:00Z",
+    "updated_at": "2026-05-15T00:00:00Z"
+  },
+  {
+    "id": "ch-003",
+    "name": "Frisco Chapter",
+    "slug": "frisco",
+    "location": "Frisco, Texas",
+    "country": "US",
+    "status": "active",
+    "president_name": "Aahana Basappa",
+    "president_email": "aahana@bridgethegaprobotics.org",
+    "president_phone": "+1-214-555-0456",
+    "member_count": 30,
+    "monthly_fundraising_goal": 300,
+    "monthly_kits_goal": 100,
+    "monthly_events_goal": 2,
+    "description": "Founded by BTG's executive director, the Frisco chapter is our flagship chapter. Runs regular workshops, kit drives, and community events across the Dallas-Fort Worth metroplex.",
+    "founded_date": "2025-06-01",
+    "social_links": {
+      "instagram": "https://instagram.com/btgfrisco",
+      "website": "https://frisco.bridgethegaprobotics.org"
+    },
+    "stats": {
+      "kits_donated": 200,
+      "funds_raised": 3200,
+      "events_held": 15,
+      "students_served": 800
+    },
+    "created_at": "2025-06-01T00:00:00Z",
+    "updated_at": "2026-06-20T00:00:00Z"
+  }
+]

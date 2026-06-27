@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Manage Users | BTG{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>Users</h1>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-outline btn-sm">Back</a>
+        </div>
+    </div>
+
+    <div class="admin-section">
+        <h2>Add New User</h2>
+        <form method="POST" action="{{ url_for('admin.user_create') }}" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--gap);">
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="name" placeholder="Full name" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="email" name="email" placeholder="Email address" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <select name="role">
+                    <option value="chapter_president">Chapter President</option>
+                    <option value="super_admin">Super Admin</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <select name="chapter_id">
+                    <option value="">No chapter</option>
+                    {% for ch in chapters %}
+                    <option value="{{ ch.id }}">{{ ch.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-sm">Add User</button>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        </form>
+    </div>
+
+    <div class="admin-section" style="margin-top:1.25rem;">
+        <h2>All Users</h2>
+        {% for user in users %}
+        <div class="admin-item">
+            <div class="admin-item-info">
+                <div class="admin-item-title">{{ user.name }} <span style="font-weight:400;color:var(--text-3);">({{ user.role.replace('_', ' ') }})</span></div>
+                <div class="admin-item-date">{{ user.email }} &middot; @{{ user.username or '—' }} &middot; Chapter: {{ chapter_map.get(user.chapter_id, 'None') }}</div>
+            </div>
+            <div class="admin-actions">
+                <a href="{{ url_for('admin.user_edit_page', user_id=user.id) }}" class="btn-outline btn-sm">Edit</a>
+                {% if user.role != 'super_admin' %}
+                <form method="POST" action="{{ url_for('admin.user_delete', user_id=user.id) }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                    <button type="submit" class="btn-delete">Delete</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

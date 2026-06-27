@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Edit User | BTG{% endblock %}
+{% block content %}
+<div class="form-page" style="max-width:480px;">
+    <a href="{{ url_for('admin.users') }}" class="back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15,18 9,12 15,6"/></svg>
+        Back to Users
+    </a>
+    <h1>Edit User</h1>
+    <form method="POST" action="{{ url_for('admin.user_edit', user_id=user.id) }}">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" value="{{ user.name }}" required>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ user.email }}" required>
+        </div>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" value="{{ user.username or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>Role</label>
+            <select name="role">
+                <option value="chapter_president" {% if user.role == 'chapter_president' %}selected{% endif %}>Chapter President</option>
+                <option value="super_admin" {% if user.role == 'super_admin' %}selected{% endif %}>Super Admin</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Chapter</label>
+            <select name="chapter_id">
+                <option value="">No chapter</option>
+                {% for ch in chapters %}
+                <option value="{{ ch.id }}" {% if user.chapter_id == ch.id %}selected{% endif %}>{{ ch.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>New Password <span style="font-weight:400;color:var(--text-3);">(leave blank to keep current)</span></label>
+            <input type="password" name="password" placeholder="••••••••">
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn">Save Changes</button>
+            <a href="{{ url_for('admin.users') }}" class="btn-outline">Cancel</a>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    </form>
+</div>
+{% endblock %}

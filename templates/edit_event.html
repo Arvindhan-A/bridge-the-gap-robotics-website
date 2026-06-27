@@ -1,36 +1,62 @@
 {% extends "base.html" %}
-{% block title %}Edit Event - Admin{% endblock %}
+{% block title %}Event | Admin{% endblock %}
 {% block content %}
-<div class="form-page">
-    <h1>Edit Event</h1>
-    <form method="POST">
-        <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title" value="{{ event.title }}" required>
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>{{ event.title if event else 'Create Event' }}</h1>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('admin.legacy') }}" class="btn-outline btn-sm">Back</a>
         </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" required>{{ event.description }}</textarea>
-        </div>
-        <div class="form-group">
-            <label for="date">Date</label>
-            <input type="date" id="date" name="date" value="{{ event.date }}" required>
-        </div>
-        <div class="form-group">
-            <label for="location">Location</label>
-            <input type="text" id="location" name="location" value="{{ event.location }}">
-        </div>
-        <div class="form-group">
-            <label for="status">Status</label>
-            <select id="status" name="status">
-                <option value="upcoming"{% if event.status == 'upcoming' %} selected{% endif %}>Upcoming</option>
-                <option value="past"{% if event.status == 'past' %} selected{% endif %}>Past</option>
-            </select>
-        </div>
-        <div class="form-actions">
-            <button type="submit" class="btn btn-accent">Save Changes</button>
-            <a href="/events" class="btn-outline">Cancel</a>
-        </div>
-    </form>
+    </div>
+
+    <div class="admin-section">
+        <form method="POST" enctype="multipart/form-data" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);">
+            <input type="hidden" name="event_id" value="{{ event.id if event else '' }}">
+            
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="title" placeholder="Event title" required value="{{ event.title if event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="author" placeholder="Author" value="{{ event.author if event and event.author else 'Admin' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="date" name="date" required value="{{ event.date.strftime('%Y-%m-%d') if event and event.date else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="venue" placeholder="Venue / Location" value="{{ event.venue if event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="time" placeholder="Time (e.g. 10:00 AM)" value="{{ event.time if event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <select name="status">
+                    <option value="published" {{ 'selected' if event and event.status == 'published' else '' }}>Published</option>
+                    <option value="upcoming" {{ 'selected' if event and event.status == 'upcoming' else '' }}>Upcoming</option>
+                    <option value="completed" {{ 'selected' if event and event.status == 'completed' else '' }}>Completed</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <textarea name="description" rows="3" placeholder="Event description">{{ event.description if event else '' }}</textarea>
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <textarea name="content" rows="6" placeholder="Event content (HTML)">{{ event.content if event else '' }}</textarea>
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <label style="font-size:0.875rem;font-weight:600;display:block;margin-bottom:0.3rem;">Banner Image</label>
+                <input type="file" name="banner" accept="image/*">
+                {% if event and event.banner %}
+                <div style="margin-top:0.5rem;"><img src="{{ url_for('static', filename=event.banner) }}" style="max-height:80px;border-radius:var(--r-sm);"></div>
+                {% endif %}
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <input type="url" name="registration_link" placeholder="Registration link (optional)" value="{{ event.registration_link if event else '' }}">
+            </div>
+            <div style="grid-column:1/-1;">
+                <button type="submit" class="btn btn-sm">{{ 'Update Event' if event else 'Create Event' }}</button>
+                <a href="{{ url_for('admin.legacy') }}" class="btn-outline btn-sm" style="margin-left:0.5rem;">Cancel</a>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        </form>
+    </div>
 </div>
 {% endblock %}

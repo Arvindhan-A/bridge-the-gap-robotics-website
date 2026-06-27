@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | BTG{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <div>
+            <h1>Admin Dashboard</h1>
+            <p style="color:var(--text-3);font-size:0.875rem;">Super admin panel</p>
+        </div>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('admin.legacy') }}" class="btn-outline btn-sm">Blog &amp; Events</a>
+            <a href="{{ url_for('secret.dashboard') }}" class="btn-outline btn-sm">Secret Panel</a>
+        </div>
+    </div>
+
+    <div class="admin-stats">
+        <div class="stat-card">
+            <span class="stat-val">{{ total_chapters }}</span>
+            <span class="stat-lbl">Chapters</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val">{{ total_members }}</span>
+            <span class="stat-lbl">Team Members</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val">{{ total_events }}</span>
+            <span class="stat-lbl">Events</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val">{{ total_apps }}</span>
+            <span class="stat-lbl">Applications</span>
+        </div>
+    </div>
+
+    <div class="admin-grid">
+        <div class="admin-section">
+            <h2>Chapters</h2>
+            {% for chapter in chapters %}
+            <div class="admin-item">
+                <div class="admin-item-info">
+                    <div class="admin-item-title">{{ chapter.name }}</div>
+                    <div class="admin-item-date">{{ chapter.city }} &middot; {{ 'Published' if chapter.published else 'Unpublished' }}</div>
+                </div>
+                <div class="admin-actions">
+                    <a href="{{ url_for('admin.chapter_edit', chapter_id=chapter.id) }}">Edit</a>
+                    <form method="POST" action="{{ url_for('admin.chapter_toggle', chapter_id=chapter.id) }}" style="display:inline;">
+                        <button type="submit">{{ 'Unpublish' if chapter.published else 'Publish' }}</button>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="admin-empty">No chapters yet.</div>
+            {% endfor %}
+            <div class="admin-section-actions">
+                <a href="{{ url_for('admin.chapter_create') }}" class="btn btn-sm">Create Chapter</a>
+                <a href="{{ url_for('admin.chapters') }}" class="btn-outline btn-sm">Manage All</a>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Recent Users</h2>
+            {% for user in users[:5] %}
+            <div class="admin-item">
+                <div class="admin-item-info">
+                    <div class="admin-item-title">{{ user.name }}</div>
+                    <div class="admin-item-date">{{ user.email }} &middot; {{ user.role.replace('_', ' ') }}</div>
+                </div>
+                <div class="admin-actions">
+                    <form method="POST" action="{{ url_for('admin.user_delete', user_id=user.id) }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                        <button type="submit" class="btn-delete">Delete</button>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="admin-empty">No users yet.</div>
+            {% endfor %}
+        <div class="admin-section-actions">
+            <a href="{{ url_for('admin.users') }}" class="btn-outline btn-sm">Manage Users</a>
+            <a href="{{ url_for('secret.roles') }}" class="btn-outline btn-sm">Roles &amp; Permissions</a>
+        </div>
+    </div>
+
+    <div class="admin-section">
+        <h2>Applications</h2>
+        {% for chapter in chapters[:5] %}
+        {% set chapter_apps = chapter.applications|list %}
+        {% if chapter_apps %}
+        <div class="admin-item">
+            <div class="admin-item-info">
+                <div class="admin-item-title">{{ chapter.name }}</div>
+                <div class="admin-item-date">
+                    {{ chapter_apps|selectattr('status', 'equalto', 'pending')|list|length }} pending &middot;
+                    {{ chapter_apps|selectattr('status', 'equalto', 'accepted')|list|length }} accepted &middot;
+                    {{ chapter_apps|selectattr('status', 'equalto', 'rejected')|list|length }} rejected
+                </div>
+            </div>
+            <div class="admin-actions">
+                <a href="{{ url_for('admin.applications') }}" class="btn-outline btn-sm">View All</a>
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="admin-empty">No applications yet.</div>
+        {% endfor %}
+        {% if chapters|length > 5 %}
+        <div class="admin-section-actions">
+            <a href="{{ url_for('admin.applications') }}" class="btn-outline btn-sm">View All Applications</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+{% endblock %}

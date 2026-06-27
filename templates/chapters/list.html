@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Chapters | Bridge the Gap Robotics{% endblock %}
+{% block content %}
+<section class="hero hero-compact">
+    <p class="hero-tagline">Our Network</p>
+    <h1>Chapters</h1>
+    <p class="hero-sub">Student-led teams across the globe bringing robotics education to their communities.</p>
+</section>
+
+<section class="section">
+    {% if chapters %}
+    <div class="chapter-grid">
+        {% for chapter in chapters %}
+        <a href="{{ url_for('public.chapter_detail', slug=chapter.slug) }}" class="chapter-card-link">
+            <div class="chapter-preview">
+                {% if chapter.cover_image %}
+                <div class="chapter-preview-img">
+                    <img src="{{ url_for('static', filename=chapter.cover_image) }}" alt="{{ chapter.name }}">
+                </div>
+                {% endif %}
+                <div class="chapter-preview-body">
+                    {% if chapter.logo %}
+                    <img src="{{ url_for('static', filename=chapter.logo) }}" alt="" class="chapter-preview-logo">
+                    {% endif %}
+                    <h3>{{ chapter.name }}</h3>
+                    <p class="chapter-preview-city">{{ chapter.city }}</p>
+                    <p class="chapter-preview-desc">{{ chapter.description[:120] }}{% if chapter.description|length > 120 %}...{% endif %}</p>
+                    <p class="chapter-preview-president">
+                        {% set presidents = chapter.members|selectattr('position', 'equalto', 'Chapter President')|list %}
+                        {% if presidents %}President: {{ presidents[0].name }}{% endif %}
+                    </p>
+                    <span class="btn btn-sm btn-accent">View Chapter</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="post-empty">
+        <h3>No chapters yet</h3>
+        <p>Chapters coming soon. Stay tuned!</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

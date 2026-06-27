@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Announcements | {{ chapter.name }}{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>Announcements</h1>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('dashboard.overview') }}" class="btn-outline btn-sm">Back</a>
+        </div>
+    </div>
+
+    <div class="admin-section">
+        <h2>New Announcement</h2>
+        <form method="POST" action="{{ url_for('dashboard.announcement_create') }}" style="max-width:500px;">
+            <input type="hidden" name="chapter_id" value="{{ chapter.id }}">
+            <div class="form-group">
+                <input type="text" name="title" placeholder="Announcement title" required>
+            </div>
+            <div class="form-group">
+                <textarea name="content" rows="4" placeholder="Content"></textarea>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="pinned"> Pin this announcement</label>
+            </div>
+            <button type="submit" class="btn btn-sm">Post Announcement</button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        </form>
+    </div>
+
+    <div class="admin-section" style="margin-top:2.5rem;">
+        <h2>All Announcements</h2>
+        {% for ann in announcements %}
+        <div class="admin-item">
+            <div class="admin-item-info">
+                <div class="admin-item-title">{{ ann.title }} {% if ann.pinned %}<span style="font-size:0.6875rem;color:var(--accent);">(Pinned)</span>{% endif %}</div>
+                <div class="admin-item-date">{{ ann.created_at.strftime('%b %d, %Y') }}</div>
+            </div>
+            <div class="admin-actions">
+                <form method="POST" action="{{ url_for('dashboard.announcement_delete', ann_id=ann.id) }}" style="display:inline;" onsubmit="return confirm('Delete this announcement?')">
+                    <button type="submit" class="btn-delete">Delete</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="admin-empty">No announcements yet.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

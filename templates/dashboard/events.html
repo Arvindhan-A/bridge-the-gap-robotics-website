@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Events | {{ chapter.name }}{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <h1>Events</h1>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('dashboard.overview') }}" class="btn-outline btn-sm">Back</a>
+        </div>
+    </div>
+
+    <!-- Create / Edit Event -->
+    <div class="admin-section">
+        <h2>{{ 'Edit Event' if edit_event else 'Create Event' }}</h2>
+        <form method="POST" action="{{ url_for('dashboard.event_update' if edit_event else 'dashboard.event_create') }}" enctype="multipart/form-data" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);">
+            <input type="hidden" name="chapter_id" value="{{ chapter.id }}">
+            {% if edit_event %}<input type="hidden" name="event_id" value="{{ edit_event.id }}">{% endif %}
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="title" placeholder="Event title" required value="{{ edit_event.title if edit_event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="date" name="date" required value="{{ edit_event.date.strftime('%Y-%m-%d') if edit_event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="time" placeholder="Time (e.g. 10:00 AM)" value="{{ edit_event.time if edit_event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="text" name="venue" placeholder="Venue / Location" value="{{ edit_event.venue if edit_event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <select name="status">
+                    <option value="upcoming" {{ 'selected' if edit_event and edit_event.status == 'upcoming' else '' }}>Upcoming</option>
+                    <option value="ongoing" {{ 'selected' if edit_event and edit_event.status == 'ongoing' else '' }}>Ongoing</option>
+                    <option value="completed" {{ 'selected' if edit_event and edit_event.status == 'completed' else '' }}>Completed</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <input type="url" name="registration_link" placeholder="Registration link (optional)" value="{{ edit_event.registration_link if edit_event else '' }}">
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <textarea name="description" rows="3" placeholder="Event description">{{ edit_event.description if edit_event else '' }}</textarea>
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <label style="font-size:0.875rem;font-weight:600;display:block;margin-bottom:0.3rem;">Banner Image</label>
+                <input type="file" name="banner" accept="image/*">
+                {% if edit_event and edit_event.banner %}
+                <div style="margin-top:0.5rem;"><img src="{{ url_for('static', filename=edit_event.banner) }}" style="max-height:80px;border-radius:var(--r-sm);"></div>
+                {% endif %}
+            </div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;">
+                <label style="font-size:0.875rem;font-weight:600;display:block;margin-bottom:0.3rem;">Gallery Images (select multiple)</label>
+                <input type="file" name="gallery_images" accept="image/*" multiple>
+                {% if existing_images %}
+                <div style="margin-top:0.75rem;">
+                    <label style="font-size:0.8125rem;font-weight:500;color:var(--text-2);display:block;margin-bottom:0.5rem;">Or select from existing images in <code>static/images/events/</code>:</label>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:200px;overflow-y:auto;padding:8px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--surface);">
+                        {% for img in existing_images %}
+                        <label style="cursor:pointer;display:block;position:relative;">
+                            <input type="checkbox" name="existing_gallery" value="{{ img }}" style="position:absolute;opacity:0;pointer-events:none;">
+                            <img src="{{ url_for('static', filename='images/events/' + img) }}" alt="{{ img }}" style="width:100%;height:60px;object-fit:cover;border-radius:var(--r-sm);border:2px solid transparent;transition:border-color 0.2s;padding:2px;">
+                        </label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div style="grid-column:1/-1;">
+                <button type="submit" class="btn btn-sm">{{ 'Update Event' if edit_event else 'Create Event' }}</button>
+                {% if edit_event %}<a href="{{ url_for('dashboard.events', chapter_id=chapter.id) }}" class="btn-outline btn-sm" style="margin-left:0.5rem;">Cancel</a>{% endif %}
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        </form>
+    </div>
+
+    <div class="admin-section" style="margin-top:2.5rem;">
+        <h2>All Events ({{ events|length }})</h2>
+        {% for event in events %}
+        <div class="admin-item">
+            <div class="admin-item-info">
+                <div class="admin-item-title">
+                    <a href="{{ url_for('public.event_detail', event_id=event.id) }}" target="_blank">{{ event.title }}</a>
+                </div>
+                <div class="admin-item-date">{{ event.date.strftime('%b %d, %Y') }} &middot; {{ event.status }} &middot; {{ event.images.count() }} images</div>
+            </div>
+            <div class="admin-actions">
+                <a href="{{ url_for('dashboard.events', chapter_id=chapter.id, edit=event.id) }}" class="btn-outline btn-sm">Edit</a>
+                <form method="POST" action="{{ url_for('dashboard.event_delete', event_id=event.id) }}" style="display:inline;" onsubmit="return confirm('Delete this event?')">
+                    <button type="submit" class="btn-delete">Delete</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="admin-empty">No events yet.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const existingImgs = document.querySelectorAll('input[name="existing_gallery"]');
+    existingImgs.forEach(cb => {
+        const img = cb.nextElementSibling;
+        img.style.borderColor = cb.checked ? 'var(--accent)' : 'transparent';
+        cb.addEventListener('change', () => {
+            img.style.borderColor = cb.checked ? 'var(--accent)' : 'transparent';
+        });
+    });
+});
+</script>
+{% endblock %}

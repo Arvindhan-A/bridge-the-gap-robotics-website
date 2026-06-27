@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}All Applications | Admin{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+    <div class="admin-header">
+        <div>
+            <h1>All Applications</h1>
+            <p style="color:var(--text-3);font-size:0.875rem;">Applications across all chapters</p>
+        </div>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-outline btn-sm">Back</a>
+        </div>
+    </div>
+
+    {% for chapter_id, apps in grouped.items() %}
+    <div class="admin-section" style="margin-bottom:1.25rem;">
+        <h2>{{ chapters.get(chapter_id, 'Unknown Chapter') }} ({{ apps|length }})</h2>
+        {% for app in apps %}
+        <div class="admin-item" style="border-left:3px solid {% if app.status == 'accepted' %}var(--green){% elif app.status == 'rejected' %}var(--danger){% else %}var(--accent){% endif %};">
+            <div class="admin-item-info">
+                <div class="admin-item-title">
+                    {{ app.applicant_name }}
+                    <span style="display:inline-block;font-size:0.625rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:var(--r-pill);margin-left:0.5rem;{% if app.status == 'accepted' %}background:var(--green-soft);color:var(--green){% elif app.status == 'rejected' %}background:var(--danger-soft);color:var(--danger){% else %}background:var(--accent-soft);color:var(--accent){% endif %}">{{ app.status }}</span>
+                </div>
+                <div class="admin-item-date">
+                    <a href="mailto:{{ app.email }}" style="color:var(--accent);text-decoration:none;">{{ app.email }}</a>
+                    {% if app.school %} &middot; {{ app.school }}{% endif %}
+                    &middot; {{ app.created_at.strftime('%b %d, %Y') }}
+                </div>
+                {% if app.city %}<div style="font-size:0.75rem;color:var(--text-3);margin-top:2px;">{{ app.city }}</div>{% endif %}
+                {% if app.interests %}<p style="font-size:0.8125rem;color:var(--text-2);margin-top:6px;"><strong>Interests:</strong> {{ app.interests }}</p>{% endif %}
+                {% if app.motivation %}<p style="font-size:0.8125rem;color:var(--text-2);font-style:italic;margin-top:2px;">"{{ app.motivation }}"</p>{% endif %}
+            </div>
+            <div class="admin-actions" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                {% if app.status != 'accepted' %}
+                <form method="POST" action="{{ url_for('admin.application_status', app_id=app.id) }}" style="display:inline;">
+                    <input type="hidden" name="status" value="accepted">
+                    <button type="submit" style="background:var(--green);color:#fff;border:none;padding:6px 14px;border-radius:var(--r-pill);font-size:0.75rem;font-weight:600;cursor:pointer;">Accept</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                </form>
+                {% endif %}
+                {% if app.status != 'rejected' %}
+                <form method="POST" action="{{ url_for('admin.application_status', app_id=app.id) }}" style="display:inline;">
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" style="background:var(--danger);color:#fff;border:none;padding:6px 14px;border-radius:var(--r-pill);font-size:0.75rem;font-weight:600;cursor:pointer;">Reject</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                </form>
+                {% endif %}
+                {% if app.status != 'pending' %}
+                <form method="POST" action="{{ url_for('admin.application_status', app_id=app.id) }}" style="display:inline;">
+                    <input type="hidden" name="status" value="pending">
+                    <button type="submit" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);padding:6px 14px;border-radius:var(--r-pill);font-size:0.75rem;font-weight:600;cursor:pointer;">Reset</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="admin-empty">No applications for this chapter.</div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="admin-section">
+        <div class="admin-empty">
+            <p style="font-size:1.125rem;font-weight:600;color:var(--text-2);">No applications yet</p>
+            <p style="font-size:0.8125rem;color:var(--text-3);margin-top:4px;">Applications from all chapters will appear here.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,21 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Login - Admin{% endblock %}
+{% block title %}Login | BTG{% endblock %}
 {% block content %}
-<div class="form-page">
-    <h1>Admin Login</h1>
+<div class="form-page" style="text-align:center;">
+    <h1>Sign In</h1>
     <form method="POST">
         <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required autocomplete="username">
+            <label>Email or Username</label>
+            <input type="text" name="email" placeholder="you@example.com or username" required>
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required autocomplete="current-password">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter your password" required>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn btn-accent">Log In</button>
-            <a href="/" class="btn-outline">Cancel</a>
+            <button type="submit" class="btn" style="width:100%;">Sign In</button>
         </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
     </form>
+    <p style="margin-top:1.5rem;font-size:0.8125rem;color:var(--text-3);">
+        Chapter Presidents and Admin use this login.
+    </p>
 </div>
 {% endblock %}

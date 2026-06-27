@@ -2,84 +2,75 @@
 {% block title %}Events - Bridge the Gap{% endblock %}
 {% block content %}
 <section class="hero hero-compact">
-    <p class="hero-tagline">Get Involved</p>
-    <h1>Our Events</h1>
-    <p class="hero-sub">Join us at workshops, donation drives, and community events to help bring robotics education to everyone.</p>
+    <p class="hero-tagline">Events</p>
+    <h1>Events &amp; Highlights</h1>
+    <p class="hero-sub">See what our chapters have been up to — from workshops to outreach events.</p>
 </section>
 
 <section class="section">
     <div class="sec-header">
-        <span class="sec-label">Upcoming</span>
-        <h2 class="sec-title">Upcoming Events</h2>
+        <span class="sec-label">All Events</span>
+        <h2 class="sec-title">Recent &amp; Upcoming Events</h2>
+        <p class="sec-desc">Browse events from all our chapters across the country.</p>
     </div>
-
-    {% set upcoming = events | selectattr('status', 'equalto', 'upcoming') | list %}
-    {% if upcoming %}
-    <div class="event-list">
-        {% for event in upcoming %}
-        <div class="event-item">
-            <div class="event-date">
-                {% if event.date %}{{ event.date }}{% else %}TBA{% endif %}
-            </div>
-            <div class="event-info">
+    <div class="event-card-list">
+        {% for event in events %}
+        <div class="event-card">
+            <div class="event-card-header">
                 <h3>{{ event.title }}</h3>
-                <p>{{ event.description }}</p>
-                <div class="event-meta">
-                    {% if event.location %}
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        {{ event.location }}
-                    </span>
-                    {% endif %}
-                </div>
-                <span class="event-status upcoming">upcoming</span>
+                <span class="event-card-badge">{{ event.date.strftime('%b %d, %Y') }}</span>
             </div>
+            <div class="event-card-body">
+                {{ event.description }}
+                {% if event.venue or event.chapter %}
+                <div class="event-card-meta">
+                    {% if event.venue %}<span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>{{ event.venue }}</span>{% endif %}
+                    {% if event.chapter %}<span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>{{ event.chapter.name }}</span>{% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% if event.images.count() > 0 %}
+            <div class="event-card-carousel">
+                <div class="event-card-track">
+                    {% for img in event.images %}
+                    <div class="event-card-slide" data-src="{{ url_for('static', filename=img.image) }}">
+                        <img src="{{ url_for('static', filename=img.image) }}" alt="{{ img.caption or event.title }}">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="event-card-empty">
+            <h3>No events yet</h3>
+            <p>Events from our chapters will appear here. Check back soon!</p>
         </div>
         {% endfor %}
     </div>
-    {% else %}
-    <p style="color:var(--text-3);font-size:0.9375rem;">No upcoming events yet. Check back soon!</p>
-    {% endif %}
 </section>
+{% endblock %}
 
-<section class="section">
-    <div class="sec-header">
-        <span class="sec-label">Past Events</span>
-        <h2 class="sec-title">Past Events</h2>
-    </div>
-
-    {% set past = events | selectattr('status', 'equalto', 'past') | list %}
-    {% if past %}
-    <div class="event-list">
-        {% for event in past %}
-        <div class="event-item">
-            <div class="event-date">{{ event.date[:7] }}</div>
-            <div class="event-info">
-                <h3>{{ event.title }}</h3>
-                <p>{{ event.description }}</p>
-                <div class="event-meta">
-                    {% if event.location %}
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        {{ event.location }}
-                    </span>
-                    {% endif %}
-                </div>
-                <span class="event-status past">past</span>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p style="color:var(--text-3);font-size:0.9375rem;">No past events yet.</p>
-    {% endif %}
-</section>
-
-<section class="section cta-section">
-    <h2>Want to Help?</h2>
-    <p>We're always looking for volunteers to help at events and with kit preparation.</p>
-    <div class="cta-links">
-        <a href="https://forms.gle/UWsqRaCa9YAyUJLB8" class="btn btn-accent" target="_blank">Sign Up to Volunteer</a>
-    </div>
-</section>
+{% block scripts %}
+{{ super() }}
+<script>
+document.querySelectorAll('.event-card-slide').forEach(slide => {
+    slide.addEventListener('click', function() {
+        const src = this.dataset.src;
+        const existing = document.querySelector('.lightbox');
+        if (existing) {
+            document.querySelector('.lightbox-img').src = src;
+            existing.classList.add('open');
+        } else {
+            const lb = document.createElement('div');
+            lb.className = 'lightbox open';
+            lb.innerHTML = '<img class="lightbox-img" src="' + src + '" alt=""><button class="lightbox-close" onclick="this.parentElement.classList.remove(\'open\')">✕</button>';
+            lb.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('open');
+            });
+            document.body.appendChild(lb);
+        }
+    });
+});
+</script>
 {% endblock %}
